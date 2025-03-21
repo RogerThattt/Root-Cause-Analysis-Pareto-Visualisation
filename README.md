@@ -33,3 +33,30 @@ Copy
 Edit
 fallout_df['Cumulative_Sum'] = fallout_df['Fallout_Count'].cumsum()
 fallout_df['Cumulative_Percent'] = 100 * fallout_df['Cumulative_Sum'] / fallout_df['Fallout_Coun
+
+
+✅ Step 3: Plot Pareto Chart (Bar + Line)
+python
+Copy
+Edit
+import matplotlib.pyplot as plt
+
+fig, ax1 = plt.subplots(figsize=(12, 6))
+
+# Bar plot for fallout counts
+ax1.bar(fallout_df['Fallout_Reason'], fallout_df['Fallout_Count'], color='salmon')
+ax1.set_xlabel('Fallout Reason')
+ax1.set_ylabel('Fallout Count', color='red')
+ax1.tick_params('y', colors='red')
+ax1.set_xticklabels(fallout_df['Fallout_Reason'], rotation=45, ha='right')
+
+# Line plot for cumulative percentage
+ax2 = ax1.twinx()
+ax2.plot(fallout_df['Fallout_Reason'], fallout_df['Cumulative_Percent'], color='blue', marker='o')
+ax2.set_ylabel('Cumulative %', color='blue')
+ax2.tick_params('y', colors='blue')
+ax2.axhline(80, color='grey', linestyle='--')  # 80% Reference Line
+
+plt.title('Pareto Chart - Order Fallout Root Cause Analysis')
+plt.tight_layout()
+plt.show()
