@@ -60,3 +60,15 @@ ax2.axhline(80, color='grey', linestyle='--')  # 80% Reference Line
 plt.title('Pareto Chart - Order Fallout Root Cause Analysis')
 plt.tight_layout()
 plt.show()
+
+
+✅ Output: Visual Insights
+Red Bars → Fallout Counts per reason
+Blue Line → Cumulative impact (%)
+Dashed 80% Line → Highlights the major contributors causing 80% of fallout
+✅ Optional - Display inside Databricks notebook
+python
+Copy
+Edit
+display(fallout_df)  # Databricks native table
+Or, embed the above Matplotlib chart directly in Databricks.
