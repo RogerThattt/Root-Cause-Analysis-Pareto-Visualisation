@@ -1,0 +1,40 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "source": "# 📊 Order Fallout Root Cause - Pareto Chart\nThis notebook generates a Pareto Chart (Bar + Cumulative %) for Order Fallout Root Cause Analysis.",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "# Step 1: Query Fallout Data\nfallout_df = spark.sql(\"\"\"\n  SELECT Fallout_Reason, COUNT(DISTINCT Order_ID) AS Fallout_Count\n  FROM order_fallout_table\n  WHERE Fallout_Flag = 'Y'\n  GROUP BY Fallout_Reason\n  ORDER BY Fallout_Count DESC\n\"\"\")\n\nfallout_pd = fallout_df.toPandas()\nfallout_pd",
+      "language": "python",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "# Step 2: Calculate Cumulative %\nfallout_pd['Cumulative_Sum'] = fallout_pd['Fallout_Count'].cumsum()\nfallout_pd['Cumulative_Percent'] = 100 * fallout_pd['Cumulative_Sum'] / fallout_pd['Fallout_Count'].sum()\n\nfallout_pd",
+      "language": "python",
+      "metadata": {}
+    },
+    {
+      "cell_type": "code",
+      "source": "# Step 3: Plot Pareto Chart (Bar + Line)\nimport matplotlib.pyplot as plt\n\nfig, ax1 = plt.subplots(figsize=(12, 6))\n\n# Bar plot for fallout counts\nax1.bar(fallout_pd['Fallout_Reason'], fallout_pd['Fallout_Count'], color='salmon')\nax1.set_xlabel('Fallout Reason')\nax1.set_ylabel('Fallout Count', color='red')\nax1.tick_params('y', colors='red')\nax1.set_xticklabels(fallout_pd['Fallout_Reason'], rotation=45, ha='right')\n\n# Line plot for cumulative percentage\nax2 = ax1.twinx()\nax2.plot(fallout_pd['Fallout_Reason'], fallout_pd['Cumulative_Percent'], color='blue', marker='o')\nax2.set_ylabel('Cumulative %', color='blue')\nax2.tick_params('y', colors='blue')\nax2.axhline(80, color='grey', linestyle='--')  # 80% Reference Line\n\nplt.title('Pareto Chart - Order Fallout Root Cause Analysis')\nplt.tight_layout()\nplt.show()",
+      "language": "python",
+      "metadata": {}
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    },
+    "language_info": {
+      "name": "python",
+      "version": "3.9"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
